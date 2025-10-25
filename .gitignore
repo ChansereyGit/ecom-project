@@ -1,29 +1,15 @@
 # .gitignore
 
 # --- Documentation Files (Generated) ---
-# Exclude all documentation MD files except README
-*_GUIDE.md
-*_IMPLEMENTATION.md
-*_COMPLETE.md
-*_SUMMARY.md
-*_FIX.md
-*_PLAN.md
-*_CHECKLIST.md
-*_DIAGRAM.md
-*_INTEGRATION.md
-*_ANALYSIS.md
-*_REVIEW.md
-*_PROMPT.md
-*_REFERENCE.md
-*_STRATEGY.md
-WHAT_WE_BUILT.md
-START_HERE.md
-QUICK_START.md
+# Exclude all MD files except the important ones
+*.md
 
 # Keep these important docs
 !README.md
 !CONTRIBUTING.md
 !LICENSE.md
+!backend/README.md
+!backend/SETUP.md
 
 # --- Local Configuration and Environment Files ---
 # Ignore the file where the actual secret is stored
