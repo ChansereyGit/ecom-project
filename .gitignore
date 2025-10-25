@@ -1,0 +1,100 @@
+# .gitignore
+
+# --- Documentation Files (Generated) ---
+# Exclude all documentation MD files except README
+*_GUIDE.md
+*_IMPLEMENTATION.md
+*_COMPLETE.md
+*_SUMMARY.md
+*_FIX.md
+*_PLAN.md
+*_CHECKLIST.md
+*_DIAGRAM.md
+*_INTEGRATION.md
+*_ANALYSIS.md
+*_REVIEW.md
+*_PROMPT.md
+*_REFERENCE.md
+*_STRATEGY.md
+WHAT_WE_BUILT.md
+START_HERE.md
+QUICK_START.md
+
+# Keep these important docs
+!README.md
+!CONTRIBUTING.md
+!LICENSE.md
+
+# --- Local Configuration and Environment Files ---
+# Ignore the file where the actual secret is stored
+application-local.yml
+.env
+backend/.env
+admin-portal/.env
+admin-portal/.env.local
+flutter/.env
+
+# --- Build Artifacts and IDE Files ---
+/target/
+*.class
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# --- Backend (Spring Boot) ---
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/*.log
+backend/*.tmp
+
+# --- Admin Portal (React/Vite) ---
+admin-portal/node_modules/
+admin-portal/dist/
+admin-portal/build/
+admin-portal/.env.local
+admin-portal/.env.*.local
+admin-portal/npm-debug.log*
+admin-portal/yarn-debug.log*
+admin-portal/yarn-error.log*
+
+# --- Flutter ---
+flutter/build/
+flutter/.dart_tool/
+flutter/.flutter-plugins
+flutter/.flutter-plugins-dependencies
+flutter/.packages
+flutter/.pub-cache/
+flutter/.pub/
+flutter/ios/Pods/
+flutter/ios/.symlinks/
+flutter/android/.gradle/
+flutter/android/app/debug/
+flutter/android/app/profile/
+flutter/android/app/release/
+
+# --- Database ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- OS Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Secrets and Keys ---
+*.pem
+*.key
+*.p12
+*.jks
+secrets/
+credentials/
