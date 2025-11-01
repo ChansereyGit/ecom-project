@@ -172,7 +172,7 @@ class ReviewsSection extends StatelessWidget {
               ),
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
-                widthFactor: rating / 5.0,
+                widthFactor: (rating / 5.0).clamp(0.0, 1.0),
                 child: Container(
                   decoration: BoxDecoration(
                     color: colorScheme.primary,
@@ -432,7 +432,7 @@ class _AllReviewsScreen extends StatelessWidget {
               ),
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
-                widthFactor: rating / 5.0,
+                widthFactor: (rating / 5.0).clamp(0.0, 1.0),
                 child: Container(
                   decoration: BoxDecoration(
                     color: colorScheme.primary,

@@ -9,6 +9,7 @@ import '../../widgets/custom_bottom_bar.dart';
 import '../../widgets/custom_icon_widget.dart';
 import '../../models/booking.dart';
 import '../../services/booking_service.dart';
+import '../../services/hotel_service.dart';
 
 class MyBookings extends StatefulWidget {
   const MyBookings({super.key});
@@ -58,10 +59,12 @@ class _MyBookingsState extends State<MyBookings> with SingleTickerProviderStateM
         setState(() {
           _allBookings = bookings;
           
-          // Filter upcoming bookings (check-in date is in the future)
+          // Filter upcoming bookings (check-in date is today or in the future)
           _upcomingBookings = bookings.where((b) {
             final checkInDate = DateFormat('yyyy-MM-dd').parse(b.checkInDate);
-            return checkInDate.isAfter(now) && 
+            final today = DateTime(now.year, now.month, now.day);
+            final checkIn = DateTime(checkInDate.year, checkInDate.month, checkInDate.day);
+            return (checkIn.isAtSameMomentAs(today) || checkIn.isAfter(today)) && 
                    b.status != 'CANCELLED';
           }).toList();
           
@@ -441,26 +444,51 @@ class _MyBookingsState extends State<MyBookings> with SingleTickerProviderStateM
               padding: EdgeInsets.all(4.w),
               child: Row(
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => _cancelBooking(booking),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: colorScheme.error,
-                        side: BorderSide(color: colorScheme.error),
+                  // Only show cancel button for CONFIRMED or PENDING bookings
+                  if (booking.status.toUpperCase() == 'CONFIRMED' || 
+                      booking.status.toUpperCase() == 'PENDING') ...[
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => _cancelBooking(booking),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: colorScheme.error,
+                          side: BorderSide(color: colorScheme.error),
+                        ),
+                        child: const Text('Cancel Booking'),
                       ),
-                      child: const Text('Cancel Booking'),
                     ),
-                  ),
-                  SizedBox(width: 3.w),
+                    SizedBox(width: 3.w),
+                  ],
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Navigate to hotel detail
-                        Navigator.pushNamed(
-                          context,
-                          '/hotel-detail',
-                          arguments: {'hotelId': booking.hotelId},
-                        );
+                      onPressed: () async {
+                        // Fetch hotel details before navigating
+                        try {
+                          final hotelService = HotelService();
+                          final result = await hotelService.getHotelById(booking.hotelId);
+                          
+                          if (result['success'] && result['hotel'] != null) {
+                            if (!context.mounted) return;
+                            Navigator.pushNamed(
+                              context,
+                              '/hotel-detail',
+                              arguments: {
+                                'hotelId': booking.hotelId,
+                                'hotel': result['hotel'].toJson(),
+                              },
+                            );
+                          } else {
+                            Fluttertoast.showToast(
+                              msg: 'Unable to load hotel details',
+                              backgroundColor: colorScheme.error,
+                            );
+                          }
+                        } catch (e) {
+                          Fluttertoast.showToast(
+                            msg: 'Error loading hotel: ${e.toString()}',
+                            backgroundColor: colorScheme.error,
+                          );
+                        }
                       },
                       child: const Text('View Hotel'),
                     ),
@@ -492,6 +520,16 @@ class _MyBookingsState extends State<MyBookings> with SingleTickerProviderStateM
         backgroundColor = colorScheme.tertiary.withValues(alpha: 0.1);
         textColor = colorScheme.tertiary;
         displayText = 'Pending';
+        break;
+      case 'CHECKED_IN':
+        backgroundColor = Colors.green.withValues(alpha: 0.1);
+        textColor = Colors.green.shade700;
+        displayText = 'Checked In';
+        break;
+      case 'COMPLETED':
+        backgroundColor = Colors.blue.withValues(alpha: 0.1);
+        textColor = Colors.blue.shade700;
+        displayText = 'Completed';
         break;
       case 'CANCELLED':
         backgroundColor = colorScheme.error.withValues(alpha: 0.1);

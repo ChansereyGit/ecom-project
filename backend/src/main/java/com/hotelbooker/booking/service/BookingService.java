@@ -11,7 +11,9 @@ import com.hotelbooker.hotel.entity.Hotel;
 import com.hotelbooker.hotel.entity.Room;
 import com.hotelbooker.hotel.repository.HotelRepository;
 import com.hotelbooker.hotel.repository.RoomRepository;
+import com.hotelbooker.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,12 +26,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookingService {
     
     private final BookingRepository bookingRepository;
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
     
     @Transactional
     public BookingDto createBooking(CreateBookingRequest request) {
@@ -55,6 +59,7 @@ public class BookingService {
         long nights = ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
         double totalPrice = room.getPricePerNight() * nights * request.getNumberOfRooms();
         
+        // Status is CONFIRMED because payment is processed before booking creation
         Booking booking = Booking.builder()
                 .user(user)
                 .hotel(hotel)
@@ -65,7 +70,7 @@ public class BookingService {
                 .numberOfRooms(request.getNumberOfRooms())
                 .numberOfNights((int) nights)
                 .totalPrice(totalPrice)
-                .status(Booking.BookingStatus.PENDING)
+                .status(Booking.BookingStatus.CONFIRMED) // Set as CONFIRMED since payment succeeded
                 .specialRequests(request.getSpecialRequests())
                 .guestName(request.getGuestName())
                 .guestEmail(request.getGuestEmail())
@@ -77,6 +82,20 @@ public class BookingService {
         roomRepository.save(room);
         
         booking = bookingRepository.save(booking);
+        
+        // Link payment to booking if paymentIntentId is provided
+        if (request.getPaymentIntentId() != null && !request.getPaymentIntentId().isEmpty()) {
+            final String bookingId = booking.getId();
+            final String paymentIntentId = request.getPaymentIntentId();
+            log.info("Linking payment {} to booking {}", paymentIntentId, bookingId);
+            paymentRepository.findByStripePaymentIntentId(paymentIntentId)
+                    .ifPresent(payment -> {
+                        payment.setBookingId(bookingId);
+                        paymentRepository.save(payment);
+                        log.info("Payment linked successfully");
+                    });
+        }
+        
         return mapToDto(booking);
     }
     

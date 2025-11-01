@@ -55,8 +55,8 @@ class _PaymentSectionState extends State<PaymentSection> {
       'available': Platform.isAndroid,
     },
     {
-      'id': 'paypal',
-      'name': 'PayPal',
+      'id': 'stripe',
+      'name': 'Stripe',
       'icon': 'payment',
       'available': true,
     },
@@ -245,28 +245,31 @@ class _PaymentSectionState extends State<PaymentSection> {
                               ),
                             ),
                             if (method['id'] == 'card') ...[
-                              Row(
-                                children: _cardTypes.map((cardType) {
-                                  return Container(
-                                    margin: EdgeInsets.only(left: 1.w),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 2.w, vertical: 0.5.h),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          colorScheme.surfaceContainerHighest,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      cardType.toUpperCase(),
-                                      style:
-                                          theme.textTheme.bodySmall?.copyWith(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: colorScheme.onSurfaceVariant,
+                              Flexible(
+                                child: Wrap(
+                                  spacing: 1.w,
+                                  runSpacing: 0.5.h,
+                                  children: _cardTypes.map((cardType) {
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 1.5.w, vertical: 0.4.h),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            colorScheme.surfaceContainerHighest,
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
-                                    ),
-                                  );
-                                }).toList(),
+                                      child: Text(
+                                        cardType.toUpperCase(),
+                                        style:
+                                            theme.textTheme.bodySmall?.copyWith(
+                                          fontSize: 9.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             ],
                           ],

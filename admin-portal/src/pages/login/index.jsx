@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import LoginBackground from './components/LoginBackground';
-import LoginCredentialsHelper from './components/LoginCredentialsHelper';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -10,16 +9,20 @@ const LoginPage = () => {
   useEffect(() => {
     // Check if user is already logged in
     const userData = localStorage.getItem('hotelAdmin_user');
-    if (userData) {
+    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    
+    if (userData && token) {
       try {
         const user = JSON.parse(userData);
-        // Check if session is still valid (optional: add expiry logic)
+        // Check if session is still valid
         if (user?.email && user?.role) {
-          navigate('/dashboard');
+          navigate('/booking-management');
         }
       } catch (error) {
         // Clear invalid session data
         localStorage.removeItem('hotelAdmin_user');
+        localStorage.removeItem('authToken');
+        sessionStorage.removeItem('authToken');
       }
     }
   }, [navigate]);
@@ -30,7 +33,6 @@ const LoginPage = () => {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12">
         <div className="w-full max-w-md mx-auto">
           <LoginForm />
-          <LoginCredentialsHelper />
         </div>
       </div>
 

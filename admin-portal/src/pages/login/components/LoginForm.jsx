@@ -2,26 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
-import Select from '../../../components/ui/Select';
 import { Checkbox } from '../../../components/ui/Checkbox';
 import Icon from '../../../components/AppIcon';
 import { authAPI } from '../../../services/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: '',
     rememberMe: false
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
-  const roleOptions = [
-    { value: 'ADMIN', label: 'Admin - Full Access' },
-    { value: 'USER', label: 'User - Limited Access' }
-  ];
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -53,10 +48,6 @@ const LoginForm = () => {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
-    if (!formData?.role) {
-      newErrors.role = 'Please select your role';
-    }
-
     return newErrors;
   };
 
@@ -79,36 +70,9 @@ const LoginForm = () => {
       if (response.success) {
         const { token, user } = response.data;
         
-        // Check if user has the selected role
-        if (user.role !== formData.role) {
-          setErrors({
-            role: `Access denied. Your account role is ${user.role}, but you selected ${formData.role}.`
-          });
-          setIsLoading(false);
-          return;
-        }
-        
-        // Store token and user info
-        const storage = formData.rememberMe ? localStorage : sessionStorage;
-        storage.setItem('authToken', token);
-        storage.setItem('userRole', user.role);
-        storage.setItem('userEmail', user.email);
-        
-        // Also store in old format for compatibility
-        localStorage.setItem('hotelAdmin_user', JSON.stringify({
-          email: user.email,
-          fullName: user.fullName,
-          role: user.role,
-          rememberMe: formData.rememberMe,
-          loginTime: new Date().toISOString()
-        }));
-        
-        // Navigate based on role
-        if (user.role === 'ADMIN') {
-          navigate('/property-management');
-        } else {
-          navigate('/dashboard');
-        }
+        // Use AuthContext login and navigate
+        const redirectPath = authLogin(user, token, formData.rememberMe);
+        navigate(redirectPath);
       } else {
         setErrors({
           general: response.message || 'Login failed. Please try again.'
@@ -174,17 +138,6 @@ const LoginForm = () => {
             value={formData?.password}
             onChange={(e) => handleInputChange('password', e?.target?.value)}
             error={errors?.password}
-            required
-          />
-
-          {/* Role Selection */}
-          <Select
-            label="Select Your Role"
-            placeholder="Choose your access level"
-            options={roleOptions}
-            value={formData?.role}
-            onChange={(value) => handleInputChange('role', value)}
-            error={errors?.role}
             required
           />
 

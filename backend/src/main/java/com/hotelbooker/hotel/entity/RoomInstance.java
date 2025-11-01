@@ -17,7 +17,7 @@ public class RoomInstance extends BaseEntity {
     @JoinColumn(name = "room_type_id", nullable = false)
     private Room roomType;
     
-    @Column(name = "room_number", unique = true, nullable = false, length = 50)
+    @Column(name = "room_number", nullable = false, length = 50)
     private String roomNumber;
     
     @Column(name = "floor")

@@ -26,198 +26,198 @@ const BookingManagement = () => {
 
   // Mock bookings data
   const mockBookings = [
-  {
-    id: "BK001",
-    guest: {
-      name: "Sarah Johnson",
-      email: "sarah.johnson@email.com",
-      phone: "+1 (555) 123-4567",
-      address: "123 Main St, New York, NY 10001",
-      type: "VIP",
-      avatar: "https://images.unsplash.com/photo-1734991032476-bceab8383a59",
-      avatarAlt: "Professional headshot of woman with shoulder-length brown hair in business attire"
+    {
+      id: "BK001",
+      guest: {
+        name: "Sarah Johnson",
+        email: "sarah.johnson@email.com",
+        phone: "+1 (555) 123-4567",
+        address: "123 Main St, New York, NY 10001",
+        type: "VIP",
+        avatar: "https://images.unsplash.com/photo-1734991032476-bceab8383a59",
+        avatarAlt: "Professional headshot of woman with shoulder-length brown hair in business attire"
+      },
+      checkIn: "2024-10-16",
+      checkOut: "2024-10-18",
+      nights: 2,
+      room: {
+        type: "Deluxe Room",
+        number: "205",
+        rate: 180
+      },
+      guests: 2,
+      status: "confirmed",
+      payment: {
+        status: "paid",
+        method: "Credit Card",
+        amount: 360,
+        transactionId: "TXN123456789",
+        date: "2024-10-14"
+      },
+      total: 403.20,
+      specialRequests: "Late check-in requested, non-smoking room preferred",
+      createdAt: "2024-10-12"
     },
-    checkIn: "2024-10-16",
-    checkOut: "2024-10-18",
-    nights: 2,
-    room: {
-      type: "Deluxe Room",
-      number: "205",
-      rate: 180
+    {
+      id: "BK002",
+      guest: {
+        name: "Michael Rodriguez",
+        email: "m.rodriguez@email.com",
+        phone: "+1 (555) 987-6543",
+        address: "456 Oak Ave, Los Angeles, CA 90210",
+        type: "Regular",
+        avatar: "https://images.unsplash.com/photo-1724128195747-dd25cba7860f",
+        avatarAlt: "Professional headshot of Hispanic man with short black hair in navy suit"
+      },
+      checkIn: "2024-10-15",
+      checkOut: "2024-10-20",
+      nights: 5,
+      room: {
+        type: "Suite",
+        number: "301",
+        rate: 250
+      },
+      guests: 3,
+      status: "checked-in",
+      payment: {
+        status: "paid",
+        method: "Debit Card",
+        amount: 1250,
+        transactionId: "TXN987654321",
+        date: "2024-10-13"
+      },
+      total: 1400.00,
+      specialRequests: "Extra towels and pillows for additional guest",
+      createdAt: "2024-10-10"
     },
-    guests: 2,
-    status: "confirmed",
-    payment: {
-      status: "paid",
-      method: "Credit Card",
-      amount: 360,
-      transactionId: "TXN123456789",
-      date: "2024-10-14"
-    },
-    total: 403.20,
-    specialRequests: "Late check-in requested, non-smoking room preferred",
-    createdAt: "2024-10-12"
-  },
-  {
-    id: "BK002",
-    guest: {
-      name: "Michael Rodriguez",
-      email: "m.rodriguez@email.com",
-      phone: "+1 (555) 987-6543",
-      address: "456 Oak Ave, Los Angeles, CA 90210",
-      type: "Regular",
-      avatar: "https://images.unsplash.com/photo-1724128195747-dd25cba7860f",
-      avatarAlt: "Professional headshot of Hispanic man with short black hair in navy suit"
-    },
-    checkIn: "2024-10-15",
-    checkOut: "2024-10-20",
-    nights: 5,
-    room: {
-      type: "Suite",
-      number: "301",
-      rate: 250
-    },
-    guests: 3,
-    status: "checked-in",
-    payment: {
-      status: "paid",
-      method: "Debit Card",
-      amount: 1250,
-      transactionId: "TXN987654321",
-      date: "2024-10-13"
-    },
-    total: 1400.00,
-    specialRequests: "Extra towels and pillows for additional guest",
-    createdAt: "2024-10-10"
-  },
-  {
-    id: "BK003",
-    guest: {
-      name: "Emily Chen",
-      email: "emily.chen@email.com",
-      phone: "+1 (555) 456-7890",
-      address: "789 Pine St, Seattle, WA 98101",
-      type: "Regular",
-      avatar: "https://images.unsplash.com/photo-1668049221564-862149a48e10",
-      avatarAlt: "Professional headshot of Asian woman with long black hair smiling at camera"
-    },
-    checkIn: "2024-10-17",
-    checkOut: "2024-10-19",
-    nights: 2,
-    room: {
-      type: "Standard Room",
-      number: "102",
-      rate: 120
-    },
-    guests: 1,
-    status: "pending",
-    payment: {
+    {
+      id: "BK003",
+      guest: {
+        name: "Emily Chen",
+        email: "emily.chen@email.com",
+        phone: "+1 (555) 456-7890",
+        address: "789 Pine St, Seattle, WA 98101",
+        type: "Regular",
+        avatar: "https://images.unsplash.com/photo-1668049221564-862149a48e10",
+        avatarAlt: "Professional headshot of Asian woman with long black hair smiling at camera"
+      },
+      checkIn: "2024-10-17",
+      checkOut: "2024-10-19",
+      nights: 2,
+      room: {
+        type: "Standard Room",
+        number: "102",
+        rate: 120
+      },
+      guests: 1,
       status: "pending",
-      method: "Credit Card",
-      amount: 240,
-      transactionId: "TXN456789123",
-      date: "2024-10-14"
+      payment: {
+        status: "pending",
+        method: "Credit Card",
+        amount: 240,
+        transactionId: "TXN456789123",
+        date: "2024-10-14"
+      },
+      total: 268.80,
+      specialRequests: "",
+      createdAt: "2024-10-14"
     },
-    total: 268.80,
-    specialRequests: "",
-    createdAt: "2024-10-14"
-  },
-  {
-    id: "BK004",
-    guest: {
-      name: "David Thompson",
-      email: "david.thompson@email.com",
-      phone: "+1 (555) 321-0987",
-      address: "321 Elm St, Chicago, IL 60601",
-      type: "VIP",
-      avatar: "https://images.unsplash.com/photo-1714974528889-d51109fb6ae9",
-      avatarAlt: "Professional headshot of middle-aged man with gray hair in dark suit"
+    {
+      id: "BK004",
+      guest: {
+        name: "David Thompson",
+        email: "david.thompson@email.com",
+        phone: "+1 (555) 321-0987",
+        address: "321 Elm St, Chicago, IL 60601",
+        type: "VIP",
+        avatar: "https://images.unsplash.com/photo-1714974528889-d51109fb6ae9",
+        avatarAlt: "Professional headshot of middle-aged man with gray hair in dark suit"
+      },
+      checkIn: "2024-10-20",
+      checkOut: "2024-10-25",
+      nights: 5,
+      room: {
+        type: "Presidential Suite",
+        number: "401",
+        rate: 450
+      },
+      guests: 2,
+      status: "confirmed",
+      payment: {
+        status: "partial",
+        method: "Bank Transfer",
+        amount: 1125,
+        transactionId: "TXN789123456",
+        date: "2024-10-13"
+      },
+      total: 2520.00,
+      specialRequests: "Airport pickup service requested, champagne welcome package",
+      createdAt: "2024-10-11"
     },
-    checkIn: "2024-10-20",
-    checkOut: "2024-10-25",
-    nights: 5,
-    room: {
-      type: "Presidential Suite",
-      number: "401",
-      rate: 450
+    {
+      id: "BK005",
+      guest: {
+        name: "Lisa Anderson",
+        email: "lisa.anderson@email.com",
+        phone: "+1 (555) 654-3210",
+        address: "654 Maple Dr, Miami, FL 33101",
+        type: "Regular",
+        avatar: "https://images.unsplash.com/photo-1684262855358-88f296a2cfc2",
+        avatarAlt: "Professional headshot of blonde woman in white blazer smiling warmly"
+      },
+      checkIn: "2024-10-12",
+      checkOut: "2024-10-14",
+      nights: 2,
+      room: {
+        type: "Family Room",
+        number: "105",
+        rate: 200
+      },
+      guests: 4,
+      status: "checked-out",
+      payment: {
+        status: "paid",
+        method: "Credit Card",
+        amount: 400,
+        transactionId: "TXN321654987",
+        date: "2024-10-11"
+      },
+      total: 448.00,
+      specialRequests: "Connecting rooms for family with children",
+      createdAt: "2024-10-09"
     },
-    guests: 2,
-    status: "confirmed",
-    payment: {
-      status: "partial",
-      method: "Bank Transfer",
-      amount: 1125,
-      transactionId: "TXN789123456",
-      date: "2024-10-13"
-    },
-    total: 2520.00,
-    specialRequests: "Airport pickup service requested, champagne welcome package",
-    createdAt: "2024-10-11"
-  },
-  {
-    id: "BK005",
-    guest: {
-      name: "Lisa Anderson",
-      email: "lisa.anderson@email.com",
-      phone: "+1 (555) 654-3210",
-      address: "654 Maple Dr, Miami, FL 33101",
-      type: "Regular",
-      avatar: "https://images.unsplash.com/photo-1684262855358-88f296a2cfc2",
-      avatarAlt: "Professional headshot of blonde woman in white blazer smiling warmly"
-    },
-    checkIn: "2024-10-12",
-    checkOut: "2024-10-14",
-    nights: 2,
-    room: {
-      type: "Family Room",
-      number: "105",
-      rate: 200
-    },
-    guests: 4,
-    status: "checked-out",
-    payment: {
-      status: "paid",
-      method: "Credit Card",
-      amount: 400,
-      transactionId: "TXN321654987",
-      date: "2024-10-11"
-    },
-    total: 448.00,
-    specialRequests: "Connecting rooms for family with children",
-    createdAt: "2024-10-09"
-  },
-  {
-    id: "BK006",
-    guest: {
-      name: "James Wilson",
-      email: "james.wilson@email.com",
-      phone: "+1 (555) 789-0123",
-      address: "987 Cedar Ln, Boston, MA 02101",
-      type: "Regular",
-      avatar: "https://images.unsplash.com/photo-1609770653328-a4d1dd377970",
-      avatarAlt: "Professional headshot of young man with beard in casual button-down shirt"
-    },
-    checkIn: "2024-10-18",
-    checkOut: "2024-10-21",
-    nights: 3,
-    room: {
-      type: "Deluxe Room",
-      number: "208",
-      rate: 180
-    },
-    guests: 1,
-    status: "cancelled",
-    payment: {
-      status: "refunded",
-      method: "Credit Card",
-      amount: 540,
-      transactionId: "TXN654987321",
-      date: "2024-10-13"
-    },
-    total: 604.80,
-    specialRequests: "Business center access required",
-    createdAt: "2024-10-12"
-  }];
+    {
+      id: "BK006",
+      guest: {
+        name: "James Wilson",
+        email: "james.wilson@email.com",
+        phone: "+1 (555) 789-0123",
+        address: "987 Cedar Ln, Boston, MA 02101",
+        type: "Regular",
+        avatar: "https://images.unsplash.com/photo-1609770653328-a4d1dd377970",
+        avatarAlt: "Professional headshot of young man with beard in casual button-down shirt"
+      },
+      checkIn: "2024-10-18",
+      checkOut: "2024-10-21",
+      nights: 3,
+      room: {
+        type: "Deluxe Room",
+        number: "208",
+        rate: 180
+      },
+      guests: 1,
+      status: "cancelled",
+      payment: {
+        status: "refunded",
+        method: "Credit Card",
+        amount: 540,
+        transactionId: "TXN654987321",
+        date: "2024-10-13"
+      },
+      total: 604.80,
+      specialRequests: "Business center access required",
+      createdAt: "2024-10-12"
+    }];
 
 
   useEffect(() => {
@@ -229,47 +229,77 @@ const BookingManagement = () => {
       setIsLoading(true);
       console.log('Loading bookings from API...');
       const response = await bookingsAPI.getAll();
-      
+
       console.log('API Response:', response);
-      
+
       if (response.success && response.data) {
         const bookingsData = response.data || [];
         console.log('Bookings data:', bookingsData);
-        
+
         // Transform backend data to match frontend format
-        const transformedBookings = bookingsData.map(booking => ({
-          id: booking.id,
-          guest: {
-            name: booking.guestName || 'N/A',
-            email: booking.guestEmail || 'N/A',
-            phone: booking.guestPhone || 'N/A',
-            address: 'N/A',
-            type: 'Regular',
-            avatar: 'https://images.unsplash.com/photo-1578401058525-35aaec0b4658',
-            avatarAlt: 'User avatar'
-          },
-          checkIn: booking.checkInDate,
-          checkOut: booking.checkOutDate,
-          nights: booking.numberOfNights,
-          room: {
-            type: booking.roomType || 'Standard Room',
-            number: 'N/A',
-            rate: booking.totalPrice / booking.numberOfNights
-          },
-          guests: booking.numberOfGuests,
-          status: booking.status?.toLowerCase() || 'pending',
-          payment: {
-            status: 'pending', // Will be updated from payment service
-            method: 'N/A',
-            amount: booking.totalPrice,
-            transactionId: 'N/A',
-            date: booking.createdAt
-          },
-          total: booking.totalPrice,
-          specialRequests: booking.specialRequests || '',
-          createdAt: booking.createdAt
+        const transformedBookings = await Promise.all(bookingsData.map(async (booking) => {
+          // Fetch payment status for each booking
+          let paymentStatus = 'pending';
+          let paymentMethod = 'N/A';
+          let transactionId = 'N/A';
+
+          try {
+            // Try to fetch payment data for this booking
+            const paymentResponse = await fetch(`http://localhost:8080/api/payments/booking/${booking.id}`, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              }
+            });
+
+            if (paymentResponse.ok) {
+              const paymentData = await paymentResponse.json();
+              if (paymentData.success && paymentData.data) {
+                const payment = paymentData.data;
+                // Map backend status to frontend status
+                const backendStatus = payment.status?.toLowerCase() || 'pending';
+                paymentStatus = backendStatus === 'succeeded' ? 'paid' : backendStatus;
+                paymentMethod = payment.paymentMethod || 'Card';
+                transactionId = payment.stripePaymentIntentId || 'N/A';
+              }
+            }
+          } catch (error) {
+            console.log('Could not fetch payment for booking:', booking.id);
+          }
+
+          return {
+            id: booking.id,
+            guest: {
+              name: booking.guestName || 'N/A',
+              email: booking.guestEmail || 'N/A',
+              phone: booking.guestPhone || 'N/A',
+              address: 'N/A',
+              type: 'Regular',
+              avatar: 'https://images.unsplash.com/photo-1578401058525-35aaec0b4658',
+              avatarAlt: 'User avatar'
+            },
+            checkIn: booking.checkInDate,
+            checkOut: booking.checkOutDate,
+            nights: booking.numberOfNights,
+            room: {
+              type: booking.roomType || 'Standard Room',
+              number: 'N/A',
+              rate: booking.totalPrice / booking.numberOfNights
+            },
+            guests: booking.numberOfGuests,
+            status: booking.status?.toLowerCase() || 'pending',
+            payment: {
+              status: paymentStatus,
+              method: paymentMethod,
+              amount: booking.totalPrice,
+              transactionId: transactionId,
+              date: booking.createdAt
+            },
+            total: booking.totalPrice,
+            specialRequests: booking.specialRequests || '',
+            createdAt: booking.createdAt
+          };
         }));
-        
+
         console.log('Transformed bookings:', transformedBookings);
         setBookings(transformedBookings);
         setFilteredBookings(transformedBookings);
@@ -298,14 +328,14 @@ const BookingManagement = () => {
     // Filter by guest name
     if (filters?.guestName) {
       filtered = filtered?.filter((booking) =>
-      booking?.guest?.name?.toLowerCase()?.includes(filters?.guestName?.toLowerCase())
+        booking?.guest?.name?.toLowerCase()?.includes(filters?.guestName?.toLowerCase())
       );
     }
 
     // Filter by room type
     if (filters?.roomType) {
       filtered = filtered?.filter((booking) =>
-      booking?.room?.type?.toLowerCase()?.includes(filters?.roomType?.toLowerCase())
+        booking?.room?.type?.toLowerCase()?.includes(filters?.roomType?.toLowerCase())
       );
     }
 
@@ -322,13 +352,13 @@ const BookingManagement = () => {
     // Filter by date range
     if (filters?.dateRange?.start) {
       filtered = filtered?.filter((booking) =>
-      new Date(booking.checkIn) >= new Date(filters.dateRange.start)
+        new Date(booking.checkIn) >= new Date(filters.dateRange.start)
       );
     }
 
     if (filters?.dateRange?.end) {
       filtered = filtered?.filter((booking) =>
-      new Date(booking.checkOut) <= new Date(filters.dateRange.end)
+        new Date(booking.checkOut) <= new Date(filters.dateRange.end)
       );
     }
 
@@ -392,7 +422,7 @@ const BookingManagement = () => {
     if (window.confirm(`Are you sure you want to cancel booking #${booking?.id}?`)) {
       try {
         const response = await bookingsAPI.cancel(booking.id);
-        
+
         if (response.success) {
           alert('Booking cancelled successfully!');
           await loadBookings(); // Reload bookings
@@ -410,7 +440,7 @@ const BookingManagement = () => {
     if (window.confirm(`Check in guest ${booking?.guest?.name} for booking #${booking?.id}?`)) {
       try {
         const response = await bookingsAPI.checkIn(booking.id);
-        
+
         if (response.success) {
           alert('Guest checked in successfully!');
           await loadBookings(); // Reload bookings
@@ -428,7 +458,7 @@ const BookingManagement = () => {
     if (window.confirm(`Check out guest ${booking?.guest?.name} for booking #${booking?.id}?`)) {
       try {
         const response = await bookingsAPI.checkOut(booking.id);
-        
+
         if (response.success) {
           alert('Guest checked out successfully!');
           await loadBookings(); // Reload bookings
@@ -525,11 +555,10 @@ const BookingManagement = () => {
             </div>
             <div className="flex items-center space-x-4">
               <NotificationIndicator
-                onMarkAsRead={() => {}}
-                onMarkAllAsRead={() => {}} />
+                onMarkAsRead={() => { }}
+                onMarkAllAsRead={() => { }} />
 
-              <UserProfileDropdown
-                onLogout={() => {}} />
+              <UserProfileDropdown />
 
             </div>
           </div>

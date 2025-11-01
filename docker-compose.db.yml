@@ -1,0 +1,25 @@
+# Docker Compose for PostgreSQL Database Only
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: hotelbooker-postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: Admin
+      POSTGRES_DB: hotelbooker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d hotelbooker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres_data:
+    driver: local

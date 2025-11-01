@@ -27,12 +27,12 @@ class _GuestInformationSectionState extends State<GuestInformationSection> {
   late TextEditingController _phoneController;
   late TextEditingController _specialRequestsController;
 
-  String _selectedCountryCode = '+1';
+  String _selectedCountryCode = '+855';
   int _specialRequestsCharCount = 0;
   final int _maxSpecialRequestsLength = 500;
 
   final List<Map<String, String>> _countryCodes = [
-    {'code': '+1', 'country': 'US'},
+    {'code': '+855', 'country': 'KH'},
     {'code': '+44', 'country': 'UK'},
     {'code': '+91', 'country': 'IN'},
     {'code': '+86', 'country': 'CN'},
@@ -48,16 +48,20 @@ class _GuestInformationSectionState extends State<GuestInformationSection> {
   void initState() {
     super.initState();
     _firstNameController = TextEditingController(
-        text: widget.guestData['firstName'] as String? ?? '');
-    _lastNameController = TextEditingController(
-        text: widget.guestData['lastName'] as String? ?? '');
+        text: widget.guestData['fullName'] as String? ?? '');
+    _lastNameController = TextEditingController(); // Not used anymore
     _emailController =
         TextEditingController(text: widget.guestData['email'] as String? ?? '');
     _phoneController =
         TextEditingController(text: widget.guestData['phone'] as String? ?? '');
     _specialRequestsController = TextEditingController(
         text: widget.guestData['specialRequests'] as String? ?? '');
-    _selectedCountryCode = widget.guestData['countryCode'] as String? ?? '+1';
+    
+    // Ensure the country code is valid (exists in the list)
+    final requestedCode = widget.guestData['countryCode'] as String? ?? '+855';
+    final codeExists = _countryCodes.any((c) => c['code'] == requestedCode);
+    _selectedCountryCode = codeExists ? requestedCode : '+855';
+    
     _specialRequestsCharCount = _specialRequestsController.text.length;
 
     _specialRequestsController.addListener(_updateCharCount);
@@ -82,8 +86,7 @@ class _GuestInformationSectionState extends State<GuestInformationSection> {
   void _updateGuestData() {
     final updatedData = {
       ...widget.guestData,
-      'firstName': _firstNameController.text,
-      'lastName': _lastNameController.text,
+      'fullName': _firstNameController.text,
       'email': _emailController.text,
       'phone': _phoneController.text,
       'countryCode': _selectedCountryCode,
@@ -135,54 +138,26 @@ class _GuestInformationSectionState extends State<GuestInformationSection> {
                 ],
               ),
               SizedBox(height: 3.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _firstNameController,
-                      decoration: InputDecoration(
-                        labelText: 'First Name',
-                        hintText: 'Enter first name',
-                        prefixIcon: CustomIconWidget(
-                          iconName: 'person_outline',
-                          color: colorScheme.onSurfaceVariant,
-                          size: 20,
-                        ),
-                      ),
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'First name is required';
-                        }
-                        return null;
-                      },
-                      onChanged: (_) => _updateGuestData(),
-                    ),
+              TextFormField(
+                controller: _firstNameController,
+                decoration: InputDecoration(
+                  labelText: 'Full Name',
+                  hintText: 'Enter your full name',
+                  prefixIcon: CustomIconWidget(
+                    iconName: 'person_outline',
+                    color: colorScheme.onSurfaceVariant,
+                    size: 20,
                   ),
-                  SizedBox(width: 3.w),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _lastNameController,
-                      decoration: InputDecoration(
-                        labelText: 'Last Name',
-                        hintText: 'Enter last name',
-                        prefixIcon: CustomIconWidget(
-                          iconName: 'person_outline',
-                          color: colorScheme.onSurfaceVariant,
-                          size: 20,
-                        ),
-                      ),
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Last name is required';
-                        }
-                        return null;
-                      },
-                      onChanged: (_) => _updateGuestData(),
-                    ),
-                  ),
-                ],
+                ),
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Full name is required';
+                  }
+                  return null;
+                },
+                onChanged: (_) => _updateGuestData(),
               ),
               SizedBox(height: 2.h),
               TextFormField(
@@ -214,8 +189,8 @@ class _GuestInformationSectionState extends State<GuestInformationSection> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 20.w,
+                  SizedBox(
+                    width: 32.w,
                     child: DropdownButtonFormField<String>(
                       value: _selectedCountryCode,
                       decoration: InputDecoration(

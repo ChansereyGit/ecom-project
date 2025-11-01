@@ -9,12 +9,14 @@ import Dashboard from './pages/dashboard';
 import PropertyManagement from './pages/property-management';
 import StaffManagement from './pages/staff-management';
 import RoomCalendar from './pages/room-calendar';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const userData = localStorage.getItem('hotelAdmin_user');
+  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
   
-  if (!userData) {
+  if (!userData || !token) {
     return <Navigate to="/login" replace />;
   }
   
@@ -24,24 +26,26 @@ const ProtectedRoute = ({ children }) => {
 const Routes = () => {
   return (
     <BrowserRouter>
-      <ErrorBoundary>
-      <ScrollToTop />
-      <RouterRoutes>
-        {/* Public Routes */}
-        <Route path="/login" element={<LoginPage />} />
-        
-        {/* Protected Routes */}
-        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
-        <Route path="/property-management" element={<ProtectedRoute><PropertyManagement /></ProtectedRoute>} />
-        <Route path="/staff-management" element={<ProtectedRoute><StaffManagement /></ProtectedRoute>} />
-        <Route path="/room-calendar" element={<ProtectedRoute><RoomCalendar /></ProtectedRoute>} />
-        
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-      </RouterRoutes>
-      </ErrorBoundary>
+      <AuthProvider>
+        <ErrorBoundary>
+          <ScrollToTop />
+          <RouterRoutes>
+            {/* Public Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            
+            {/* Protected Routes */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
+            <Route path="/property-management" element={<ProtectedRoute><PropertyManagement /></ProtectedRoute>} />
+            <Route path="/staff-management" element={<ProtectedRoute><StaffManagement /></ProtectedRoute>} />
+            <Route path="/room-calendar" element={<ProtectedRoute><RoomCalendar /></ProtectedRoute>} />
+            
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </RouterRoutes>
+        </ErrorBoundary>
+      </AuthProvider>
     </BrowserRouter>
   );
 };

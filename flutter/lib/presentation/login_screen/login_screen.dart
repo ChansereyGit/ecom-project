@@ -86,39 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleSignUp() {
-    // Navigate to sign up screen or show sign up dialog
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Sign Up',
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            color: AppTheme.lightTheme.colorScheme.onSurface,
-          ),
-        ),
-        content: Text(
-          'Sign up functionality will be available soon. Please use the demo credentials to continue.',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'OK',
-              style: TextStyle(
-                color: AppTheme.lightTheme.colorScheme.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    // Navigate to register screen
+    Navigator.pushNamed(context, '/register');
   }
 
   @override

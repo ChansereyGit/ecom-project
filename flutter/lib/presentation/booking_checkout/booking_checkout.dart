@@ -64,10 +64,9 @@ class _BookingCheckoutState extends State<BookingCheckout> {
 
   // Guest information data
   Map<String, dynamic> _guestData = {
-    'firstName': 'John',
-    'lastName': 'Smith',
-    'email': 'john.smith@email.com',
-    'phone': '5551234567',
+    'fullName': '',
+    'email': '',
+    'phone': '',
     'countryCode': '+1',
     'specialRequests': '',
   };
@@ -91,7 +90,49 @@ class _BookingCheckoutState extends State<BookingCheckout> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadDataFromArguments();
+      _loadUserData();
     });
+  }
+  
+  Future<void> _loadUserData() async {
+    try {
+      final user = await _authService.getCurrentUser();
+      if (user != null && mounted) {
+        // Parse phone number to extract country code and number
+        String countryCode = '+1';
+        String phoneNumber = '';
+        
+        if (user.phoneNumber != null && user.phoneNumber!.isNotEmpty) {
+          // Try to extract country code (e.g., "+1234567890" or "+1 234567890")
+          final phoneStr = user.phoneNumber!.trim();
+          if (phoneStr.startsWith('+')) {
+            // Find where the country code ends (usually 1-3 digits after +)
+            final match = RegExp(r'^\+(\d{1,3})').firstMatch(phoneStr);
+            if (match != null) {
+              countryCode = '+${match.group(1)}';
+              phoneNumber = phoneStr.substring(match.end).replaceAll(RegExp(r'[^\d]'), '');
+            } else {
+              phoneNumber = phoneStr.replaceAll(RegExp(r'[^\d]'), '');
+            }
+          } else {
+            phoneNumber = phoneStr.replaceAll(RegExp(r'[^\d]'), '');
+          }
+        }
+        
+        setState(() {
+          _guestData = {
+            'fullName': user.fullName,
+            'email': user.email,
+            'phone': phoneNumber,
+            'countryCode': countryCode,
+            'specialRequests': '',
+          };
+        });
+      }
+    } catch (e) {
+      // If user data can't be loaded, keep empty fields
+      print('Error loading user data: $e');
+    }
   }
   
   void _loadDataFromArguments() {
@@ -107,24 +148,6 @@ class _BookingCheckoutState extends State<BookingCheckout> {
         _numberOfRooms = args['numberOfRooms'] as int? ?? 1;
         _nights = args['nights'] as int? ?? 1;
         _totalPrice = args['totalPrice'] as double? ?? 0;
-      });
-      
-      // Pre-fill guest data from logged-in user
-      _loadUserData();
-    }
-  }
-  
-  Future<void> _loadUserData() async {
-    final user = await _authService.getCurrentUser();
-    if (user != null) {
-      setState(() {
-        final nameParts = user.fullName.split(' ');
-        _guestData['firstName'] = nameParts.isNotEmpty ? nameParts[0] : '';
-        _guestData['lastName'] = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
-        _guestData['email'] = user.email;
-        if (user.phoneNumber != null) {
-          _guestData['phone'] = user.phoneNumber;
-        }
       });
     }
   }
@@ -250,6 +273,7 @@ class _BookingCheckoutState extends State<BookingCheckout> {
       }
       
       // Step 2: Create booking after successful payment
+      // Status is CONFIRMED because payment was already successful
       final booking = Booking(
         userId: user.id,
         hotelId: _hotel!.id,
@@ -262,23 +286,28 @@ class _BookingCheckoutState extends State<BookingCheckout> {
         numberOfRooms: _numberOfRooms,
         numberOfNights: _nights,
         totalPrice: totalAmount,
-        status: 'CONFIRMED',
+        status: 'CONFIRMED', // Set as CONFIRMED since payment succeeded
         specialRequests: _guestData['specialRequests'] as String?,
-        guestName: '${_guestData['firstName']} ${_guestData['lastName']}',
+        guestName: _guestData['fullName'] as String,
         guestEmail: _guestData['email'] as String,
         guestPhone: '${_guestData['countryCode']}${_guestData['phone']}',
+        paymentIntentId: paymentResult['paymentIntentId'] as String?, // Link payment to booking
       );
       
       // Submit booking to backend
+      print('Creating booking with data: ${booking.toJson()}');
       final bookingResult = await _bookingService.createBooking(booking);
+      print('Booking result: $bookingResult');
       
       if (bookingResult['success']) {
         final createdBooking = bookingResult['booking'] as Booking;
+        print('Booking created successfully with ID: ${createdBooking.id}');
         _showSuccessDialog(createdBooking.id ?? 'N/A');
       } else {
         // Booking failed after payment - this is a critical error
+        print('Booking failed: ${bookingResult['message']}');
         _showPaymentErrorDialog(
-          'Payment successful but booking failed. Please contact support with payment ID: ${paymentResult['paymentIntentId']}'
+          'Payment successful but booking failed. Please contact support with payment ID: ${paymentResult['paymentIntentId']}\n\nError: ${bookingResult['message']}'
         );
       }
     } catch (e) {
@@ -293,10 +322,13 @@ class _BookingCheckoutState extends State<BookingCheckout> {
   bool _validateCurrentStep() {
     switch (_currentStep) {
       case 0:
-        return _guestData['firstName']?.isNotEmpty == true &&
-            _guestData['lastName']?.isNotEmpty == true &&
-            _guestData['email']?.isNotEmpty == true &&
-            _guestData['phone']?.isNotEmpty == true;
+        final fullName = _guestData['fullName']?.toString().trim() ?? '';
+        final email = _guestData['email']?.toString().trim() ?? '';
+        final phone = _guestData['phone']?.toString().trim() ?? '';
+        
+        return fullName.isNotEmpty &&
+            email.isNotEmpty &&
+            phone.isNotEmpty;
       case 1:
         return _paymentData['acceptTerms'] == true &&
             (_paymentData['paymentMethod'] != 'card' ||
@@ -388,24 +420,43 @@ class _BookingCheckoutState extends State<BookingCheckout> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/hotel-search-home',
-                (route) => false,
-              );
+              // Navigate back to hotel detail with the hotel data
+              if (_hotel != null) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/hotel-detail',
+                  (route) => false,
+                  arguments: {
+                    'hotelId': _hotel!.id,
+                    'hotel': _hotel!.toJson(),
+                    'checkInDate': _checkInDate,
+                    'checkOutDate': _checkOutDate,
+                    'guests': _guests,
+                    'rooms': _numberOfRooms,
+                  },
+                );
+              } else {
+                // Fallback to home if hotel data is not available
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/hotel-search-home',
+                  (route) => false,
+                );
+              }
             },
-            child: const Text('View Bookings'),
+            child: const Text('View Hotel'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
+              // Navigate to My Bookings tab
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                '/hotel-search-home',
+                '/my-bookings',
                 (route) => false,
               );
             },
-            child: const Text('Done'),
+            child: const Text('View Bookings'),
           ),
         ],
       ),
@@ -620,7 +671,7 @@ class _BookingCheckoutState extends State<BookingCheckout> {
                                 ? 'Apple Pay'
                                 : _paymentData['paymentMethod'] == 'google_pay'
                                     ? 'Google Pay'
-                                    : 'PayPal',
+                                    : 'Stripe',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onSurface,
                         ),
@@ -736,6 +787,7 @@ class _BookingCheckoutState extends State<BookingCheckout> {
                               : 'Review Booking',
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
+                            color: colorScheme.onPrimary,
                           ),
                         ),
                       ),
@@ -789,6 +841,7 @@ class _BookingCheckoutState extends State<BookingCheckout> {
                                     'Processing...',
                                     style: theme.textTheme.titleSmall?.copyWith(
                                       fontWeight: FontWeight.w600,
+                                      color: colorScheme.onPrimary,
                                     ),
                                   ),
                                 ],
@@ -797,6 +850,7 @@ class _BookingCheckoutState extends State<BookingCheckout> {
                                 'Complete Booking',
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w600,
+                                  color: colorScheme.onPrimary,
                                 ),
                               ),
                       ),

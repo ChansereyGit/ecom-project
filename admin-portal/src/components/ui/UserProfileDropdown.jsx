@@ -1,17 +1,45 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../AppIcon';
 
-const UserProfileDropdown = ({ user = null, onLogout }) => {
+const UserProfileDropdown = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const { user: authUser, logout } = useAuth();
 
-  // Mock user data if none provided
-  const currentUser = user || {
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@hoteladmin.com',
-    role: 'Hotel Manager',
-    property: 'Grand Plaza Hotel',
+  // Get user data from auth context or localStorage
+  const getUserData = () => {
+    if (authUser) return authUser;
+    
+    try {
+      const userData = localStorage.getItem('hotelAdmin_user');
+      if (userData) {
+        return JSON.parse(userData);
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+    }
+    
+    return null;
+  };
+
+  const currentUser = getUserData() || {
+    fullName: 'Admin User',
+    email: 'admin@hotel.com',
+    role: 'ADMIN',
     avatar: null
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      const redirectPath = logout();
+      navigate(redirectPath);
+    }
+    setIsOpen(false);
   };
 
   const menuItems = [
@@ -45,14 +73,7 @@ const UserProfileDropdown = ({ user = null, onLogout }) => {
     {
       label: 'Sign Out',
       icon: 'LogOut',
-      action: () => {
-        if (onLogout) {
-          onLogout();
-        } else {
-          console.log('Logout action');
-        }
-        setIsOpen(false);
-      },
+      action: handleLogout,
       variant: 'danger'
     }
   ];
@@ -82,6 +103,7 @@ const UserProfileDropdown = ({ user = null, onLogout }) => {
   }, [isOpen]);
 
   const getInitials = (name) => {
+    if (!name) return 'AD';
     return name?.split(' ')?.map(word => word?.charAt(0))?.join('')?.toUpperCase()?.slice(0, 2);
   };
 
@@ -110,10 +132,10 @@ const UserProfileDropdown = ({ user = null, onLogout }) => {
         {/* User Info */}
         <div className="hidden sm:block text-left min-w-0">
           <div className="text-sm font-medium text-foreground truncate">
-            {currentUser?.name}
+            {currentUser?.fullName || currentUser?.name}
           </div>
           <div className="text-xs text-muted-foreground truncate">
-            {currentUser?.role}
+            {currentUser?.role === 'ADMIN' ? 'Administrator' : currentUser?.role}
           </div>
         </div>
 
@@ -143,13 +165,13 @@ const UserProfileDropdown = ({ user = null, onLogout }) => {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium text-popover-foreground truncate">
-                  {currentUser?.name}
+                  {currentUser?.fullName || currentUser?.name}
                 </div>
                 <div className="text-xs text-muted-foreground truncate">
                   {currentUser?.email}
                 </div>
                 <div className="text-xs text-muted-foreground truncate mt-1">
-                  {currentUser?.role} • {currentUser?.property}
+                  {currentUser?.role === 'ADMIN' ? 'Administrator' : currentUser?.role}
                 </div>
               </div>
             </div>

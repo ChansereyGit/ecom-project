@@ -16,6 +16,7 @@ class Booking {
   final String guestName;
   final String guestEmail;
   final String guestPhone;
+  final String? paymentIntentId;
 
   Booking({
     this.id,
@@ -35,6 +36,7 @@ class Booking {
     required this.guestName,
     required this.guestEmail,
     required this.guestPhone,
+    this.paymentIntentId,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class Booking {
       guestName: json['guestName'],
       guestEmail: json['guestEmail'],
       guestPhone: json['guestPhone'],
+      paymentIntentId: json['paymentIntentId'],
     );
   }
 
@@ -78,6 +81,7 @@ class Booking {
       'guestName': guestName,
       'guestEmail': guestEmail,
       'guestPhone': guestPhone,
+      if (paymentIntentId != null) 'paymentIntentId': paymentIntentId,
     };
   }
 }

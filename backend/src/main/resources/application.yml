@@ -4,7 +4,7 @@ spring:
   
   datasource:
     url: jdbc:postgresql://localhost:5432/hotelbooker
-    username: root
+    username: postgres
     password: Admin
     driver-class-name: org.postgresql.Driver
   

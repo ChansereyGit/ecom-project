@@ -246,13 +246,15 @@ class _HotelDetailState extends State<HotelDetail> {
     }
 
     return Scaffold(
-      body: Stack(
-        children: [
-          RefreshIndicator(
-            onRefresh: _handleRefresh,
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
+      body: SafeArea(
+        top: false,
+        child: Stack(
+          children: [
+            RefreshIndicator(
+              onRefresh: _handleRefresh,
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
                 // Translucent app bar with hero image
                 SliverAppBar(
                   expandedHeight: 35.h,
@@ -354,7 +356,11 @@ class _HotelDetailState extends State<HotelDetail> {
                             'maxGuests': room.maxGuests,
                             'price': '\$${room.pricePerNight.toInt()}/night',
                             'available': room.availableRooms > 0,
-                            'image': room.images.isNotEmpty ? room.images[0] : _hotel!.images.first,
+                            'image': (room.images != null && room.images!.isNotEmpty) 
+                                ? room.images![0] 
+                                : (_hotel?.images != null && _hotel!.images.isNotEmpty)
+                                    ? _hotel!.images.first
+                                    : 'https://via.placeholder.com/400x300?text=No+Image',
                           }).toList(),
                         ),
 
@@ -417,11 +423,11 @@ class _HotelDetailState extends State<HotelDetail> {
                   ),
                 ),
               ],
+              ),
             ),
-          ),
 
-          // Sticky booking bar
-          Positioned(
+            // Sticky booking bar
+            Positioned(
             bottom: 0,
             left: 0,
             right: 0,
@@ -460,7 +466,8 @@ class _HotelDetailState extends State<HotelDetail> {
                 ),
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

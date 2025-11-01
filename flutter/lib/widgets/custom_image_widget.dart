@@ -22,7 +22,8 @@ enum ImageType { svg, png, network, file, unknown }
 
 // ignore_for_file: must_be_immutable
 class CustomImageWidget extends StatelessWidget {
-  CustomImageWidget({
+  const CustomImageWidget({
+    super.key,
     this.imageUrl,
     this.height,
     this.width,
@@ -116,7 +117,7 @@ class CustomImageWidget extends StatelessWidget {
     if (imageUrl != null) {
       switch (imageUrl!.imageType) {
         case ImageType.svg:
-          return Container(
+          return SizedBox(
             height: height,
             width: width,
             child: SvgPicture.asset(
@@ -124,9 +125,9 @@ class CustomImageWidget extends StatelessWidget {
               height: height,
               width: width,
               fit: fit ?? BoxFit.contain,
-              colorFilter: this.color != null
+              colorFilter: color != null
                   ? ColorFilter.mode(
-                      this.color ?? Colors.transparent, BlendMode.srcIn)
+                      color ?? Colors.transparent, BlendMode.srcIn)
                   : null,
               semanticsLabel: semanticLabel,
             ),
@@ -147,7 +148,7 @@ class CustomImageWidget extends StatelessWidget {
             fit: fit,
             imageUrl: imageUrl!,
             color: color,
-            placeholder: (context, url) => Container(
+            placeholder: (context, url) => SizedBox(
               height: 30,
               width: 30,
               child: LinearProgressIndicator(
@@ -157,14 +158,16 @@ class CustomImageWidget extends StatelessWidget {
             ),
             errorWidget: (context, url, error) =>
                 errorWidget ??
-                Container(
+                SizedBox(
                   height: height,
                   width: width,
-                  color: Colors.grey.shade200,
-                  child: Icon(
-                    Icons.image_not_supported_outlined,
-                    color: Colors.grey.shade400,
-                    size: 40,
+                  child: ColoredBox(
+                    color: Colors.grey.shade200,
+                    child: Icon(
+                      Icons.image_not_supported_outlined,
+                      color: Colors.grey.shade400,
+                      size: 40,
+                    ),
                   ),
                 ),
           );
@@ -180,6 +183,6 @@ class CustomImageWidget extends StatelessWidget {
           );
       }
     }
-    return SizedBox();
+    return const SizedBox();
   }
 }

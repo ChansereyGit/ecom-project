@@ -12,7 +12,6 @@ const CreatePropertyModal = ({ isOpen, onClose, onCreateProperty }) => {
     address: '',
     city: '',
     country: '',
-    pricePerNight: '',
     starRating: '3',
     latitude: 0,
     longitude: 0,
@@ -66,9 +65,6 @@ const CreatePropertyModal = ({ isOpen, onClose, onCreateProperty }) => {
     if (!formData?.address?.trim()) newErrors.address = 'Address is required';
     if (!formData?.city?.trim()) newErrors.city = 'City is required';
     if (!formData?.country?.trim()) newErrors.country = 'Country is required';
-    if (!formData?.pricePerNight || formData?.pricePerNight <= 0) {
-      newErrors.pricePerNight = 'Price per night must be greater than 0';
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors)?.length === 0;
@@ -91,7 +87,7 @@ const CreatePropertyModal = ({ isOpen, onClose, onCreateProperty }) => {
         country: formData.country,
         latitude: formData.latitude || 0,
         longitude: formData.longitude || 0,
-        pricePerNight: parseFloat(formData.pricePerNight),
+        pricePerNight: 0, // Default to 0, will be set by room types
         starRating: parseInt(formData.starRating),
         guestRating: 0.0,
         totalReviews: 0,
@@ -125,7 +121,6 @@ const CreatePropertyModal = ({ isOpen, onClose, onCreateProperty }) => {
           address: '',
           city: '',
           country: '',
-          pricePerNight: '',
           starRating: '3',
           latitude: 0,
           longitude: 0,
@@ -218,18 +213,6 @@ const CreatePropertyModal = ({ isOpen, onClose, onCreateProperty }) => {
                 value={formData?.starRating}
                 onChange={(value) => handleInputChange('starRating', value)}
                 required
-              />
-
-              <Input
-                label="Price Per Night (USD)"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData?.pricePerNight}
-                onChange={(e) => handleInputChange('pricePerNight', e?.target?.value)}
-                error={errors?.pricePerNight}
-                required
-                placeholder="99.99"
               />
             </div>
 

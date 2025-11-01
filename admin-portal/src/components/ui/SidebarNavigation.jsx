@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Icon from '../AppIcon';
+import { useAuth } from '../../contexts/AuthContext';
 
 const SidebarNavigation = ({ isCollapsed = false, onToggleCollapse }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navigationItems = [
@@ -116,7 +118,7 @@ const SidebarNavigation = ({ isCollapsed = false, onToggleCollapse }) => {
 
       {/* Collapse Toggle (Desktop) */}
       {onToggleCollapse && (
-        <div className="hidden md:block px-4 py-4 border-t border-border">
+        <div className="hidden md:block px-4 py-2 border-t border-border">
           <button
             onClick={onToggleCollapse}
             className="w-full flex items-center justify-center px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors micro-press"

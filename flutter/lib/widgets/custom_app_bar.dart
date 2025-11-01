@@ -143,7 +143,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           IconButton(
             icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () => Navigator.pushNamed(context, '/login-screen'),
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
             tooltip: 'Profile',
           ),
         ];

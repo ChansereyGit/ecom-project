@@ -41,4 +41,6 @@ public class CreateBookingRequest {
     
     @NotBlank(message = "Guest phone is required")
     private String guestPhone;
+    
+    private String paymentIntentId; // Optional: Link payment to booking
 }

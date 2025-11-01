@@ -32,8 +32,8 @@ class RoomTypesSection extends StatelessWidget {
             ),
           ),
           SizedBox(height: 2.h),
-          Container(
-            height: 32.h,
+          SizedBox(
+            height: 30.h,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: roomTypes.length,
@@ -55,39 +55,37 @@ class RoomTypesSection extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => _openRoomSelection(context, room),
-      child: Container(
-        width: 70.w,
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.shadow.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Room image
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
-              child: CustomImageWidget(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: 70.w,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.shadow.withValues(alpha: 0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Room image
+              CustomImageWidget(
                 imageUrl: room['image'] as String,
                 width: double.infinity,
-                height: 18.h,
+                height: 15.h,
                 fit: BoxFit.cover,
               ),
-            ),
 
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(3.w),
+              Padding(
+                padding: EdgeInsets.all(2.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     // Room name
                     Text(
@@ -98,7 +96,7 @@ class RoomTypesSection extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 1.h),
+                    SizedBox(height: 0.5.h),
 
                     // Bed type and capacity
                     Row(
@@ -106,7 +104,7 @@ class RoomTypesSection extends StatelessWidget {
                         CustomIconWidget(
                           iconName: 'bed',
                           color: colorScheme.onSurfaceVariant,
-                          size: 16,
+                          size: 14,
                         ),
                         SizedBox(width: 1.w),
                         Expanded(
@@ -114,6 +112,7 @@ class RoomTypesSection extends StatelessWidget {
                             room['bedType'] as String,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurfaceVariant,
+                              fontSize: 11,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -121,53 +120,62 @@ class RoomTypesSection extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 0.5.h),
+                    SizedBox(height: 0.2.h),
 
                     Row(
                       children: [
                         CustomIconWidget(
                           iconName: 'people',
                           color: colorScheme.onSurfaceVariant,
-                          size: 16,
+                          size: 14,
                         ),
                         SizedBox(width: 1.w),
                         Text(
                           'Up to ${room['maxGuests']} guests',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
+                            fontSize: 11,
                           ),
                         ),
                       ],
                     ),
 
-                    const Spacer(),
+                    SizedBox(height: 0.6.h),
 
                     // Price and availability
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'From',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'From',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                  fontSize: 10,
+                                ),
                               ),
-                            ),
-                            Text(
-                              room['price'] as String,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.w600,
+                              Text(
+                                room['price'] as String,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        SizedBox(width: 2.w),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 2.w,
-                            vertical: 0.5.h,
+                            vertical: 0.3.h,
                           ),
                           decoration: BoxDecoration(
                             color: room['available'] as bool
@@ -182,6 +190,7 @@ class RoomTypesSection extends StatelessWidget {
                                   ? AppTheme.successLight
                                   : AppTheme.errorLight,
                               fontWeight: FontWeight.w500,
+                              fontSize: 10,
                             ),
                           ),
                         ),
@@ -190,8 +199,8 @@ class RoomTypesSection extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
